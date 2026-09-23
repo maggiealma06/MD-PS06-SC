@@ -1,6 +1,6 @@
 ---
 title: "Problem Set 06"
-author: "Your Name"
+author: "Maggie Alma"
 date: last-modified
 date-format: "[Last modified on] MMMM DD, YYYY HH:mm:ss zzz"
 format: 
@@ -103,7 +103,7 @@ Do you think the relationship between `hs` and `income` is strong or weak, linea
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 1 Answers"}
-* Delete this and put your text answer here.
+* The linear relationship between hs and income seems to be strong.
 :::
 
 ::: {.callout-note icon="false" title="Problem 2"}
@@ -113,10 +113,13 @@ Which regression line (high `urbanization` or low `urbanization`) in @fig-urb ha
 ::: {.callout-important icon="false" collapse="false" title="Problem 2 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
+mod_full <- lm(income ~ hs + urbanization, data = hate_crimes)
+get_regression_table(mod_full) |>
+  kable()
 
 ```
 
-* Delete this and put your text answer here.
+* High urbanization has a higher intercept than low urbanization.
 :::
 
 ::: {.callout-note icon="false" title="Problem 3"}
@@ -124,7 +127,7 @@ Does the slope look fairly similar (parallel) for the two levels of urbanization
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 3 Answers"}
-* Delete this and put your text answer here.
+* The slopes of both lines look fairly similar.
 :::
 
 ::: {.callout-note icon="false" title="Problem 4"}
@@ -132,7 +135,7 @@ Based on the data visualization in @fig-urb, and your answer to 3, do you think 
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 4 Answers"}
-* Delete this and put your text answer here.
+* a paralell slopes model would be better for this model.
 
 ```{r}
 # Type your code and comments inside the code chunk
@@ -147,7 +150,10 @@ Create a data visualization comparing median household income at "low" and "high
 ::: {.callout-important icon="false" collapse="false" title="Problem 5 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+ggplot(hate_crimes, aes(x = urbanization, y = income)) +
+  geom_boxplot() +
+  labs(x = "Level of Urbanization", y = "Median Income", title = "Income vs. Level of Urbanization") +
+  theme_linedraw()
 ```
 :::
 
@@ -160,12 +166,16 @@ Run a linear regression model that examines the relationship between household `
 library(scales)  # Used to format numbers and for dollars
 # Type your code and comments inside the code chunk
 
+med_income_model <- lm(income ~ hs + urbanization, data = hate_crimes) 
+get_regression_table(med_income_model)
+
+ggplot(hate_crimes, aes(x = hs, y = income, color = urbanization)) +
+  geom_point() +
+  geom_parallel_slopes(se = FALSE) +
+  labs(x = "hs", y = "income", title = "Income vs. Urbanixation and Percent of Adults With a High-School Degree")
+
 ```
 
-```{r}
-# Type your code and comments here
-
-```
 :::
 
 ::: {.callout-note icon="false" title="Problem 7"}
@@ -173,7 +183,7 @@ Is the intercept the same for the states with a "low" and "high" level of urbani
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 7 Answers"}
-* Delete this and put your text answer here.
+* The slope for states with high and low urbanization is the same, since we used the paralell slopes model, but the intercepts are different 
 :::
 
 ::: {.callout-note icon="false" title="Problem 8"}
@@ -183,12 +193,11 @@ What is the slope for the regression line of the states with a "high" level of u
 ::: {.callout-important icon="false" collapse="false" title="Problem 8 Answers"}
 ```{r}
 # Type your code and comments inside the code chunk
-
+get_regression_table(med_income_model)
 ```
 
-* Delete this and put your text answer here.
+* the slope for the regression line for states with a high level of urbanization is -113725.193. The slope of the regression line for states with a high level of urbanization is 1986.794 per one percentage point increase in people with a high school degree.
 
-* Delete this and put your text answer here.
 :::
 
 ::: {.callout-note icon="false" title="Problem 9"}
@@ -196,9 +205,8 @@ What is the slope for the regression line of the states with a "low" level of ur
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 9 Answers"}
-* Delete this and put your text answer here.
+* The slope for a regression line for states with a low level of urbanization is also 1986.794 per 1 percentage point increase in people with a high school degree. The intercept of the regression line for states with a low level of urbanization is -121,058.52
 
-* Delete this and put your text answer here.
 :::
 
 ::: {.callout-note icon="false" title="Problem 10"}
@@ -206,7 +214,7 @@ Based on your regression table output (and the data visualizations), is median h
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 10 Answers"}
-* Delete this and put your text answer here.
+* The median householdincome in states that have higher levels of urbanization is higher than the median household income in states with lower levels of urbanization by $7333.326
 :::
 
 ::: {.callout-note icon="false" title="Problem 11"}
@@ -214,7 +222,7 @@ For every increase in 1 percentage point of high-school educated adults, what is
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 11 Answers"}
-* Delete this and put your text answer here.
+* For every increase in 1 percentage point of high school educated adults, there is an assosiated increase of $1986.794 in median high school income.
 :::
 
 ::: {.callout-note icon="false" title="Problem 12"}
@@ -229,7 +237,7 @@ $$\widehat{\text{income}} = `r comma(coef(summary(med_income_model))[1])` + `r r
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 12 Answers"}
-- Your $LaTeX$ answer here.
+- $\widehat{\text{income}}_{\text{high}} = -113,725 + 1986.79 \times hs$
 :::
 
 ::: {.callout-note icon="false" title="Problem 13"}
@@ -240,9 +248,11 @@ What would you predict as the median household income for a state with a **high*
 ```{r}
 # Type your code and comments inside the code chunk
 
+income_high_85 <- -113725 + 1986.79 * 85
+income_high_85
 ```
 
-* Delete this and put your text answer here.
+* The predicted median household income for a state with a high level of urbanization and 85% of adults with a high school degree is $55,152.15
 :::
 
 ::: {.callout-note icon="false" title="Problem 14"}
@@ -253,17 +263,25 @@ What would you predict as the median household income for a state with a **low**
 ```{r}
 # Type your code and comments inside the code chunk
 
+income_low_85 <- -113725 + 1986.79 * 85 - 7333.33
+income_low_85
 ```
 
-* Delete this and put your text answer here.
+* The median income for a state with a low level of urbanization in which 85% of adults have a high school degree is $47,818.82
 :::
 
 ::: {.callout-note icon="false" title="Problem 15"}
 What would you predict as the median household income for a state with a **low** level of urbanization, in which 30% of adults have a high school degree?
 :::
 
+```{r}
+income_low_30 <- -113725 + 1986.79 * 30 - 7333.33
+income_low_30
+```
+
+
 ::: {.callout-important icon="false" collapse="false" title="Problem 15 Answers"}
-* Delete this and put your text answer here.
+* THe median household income for a state with low urbanization in which 30% of adults have a high school degree is $-61454.63
 :::
 
 ::: {.callout-note icon="false" title="Problem 16"}
@@ -274,15 +292,18 @@ What was the observed `income` value for Maine (row 2)? What was the prediction 
 ```{r}
 # Type your code and comments inside the code chunk
 
+get_regression_points(med_income_model)[2, 1:6]
+
 ```
 
-* Delete this and put your text answer here.
+* The observed income value for Maine is $51,710
 
-* Delete this and put your text answer here.
+* The prediction for Maine is $57,752.93
 
-* Delete this and put your text answer here.
+* The residual for Maine is -6042.926
 
-* Delete this and put your text answer here.
+* Our model over estimated the median income for the state.
+
 :::
 
 # Independent Analysis
@@ -328,6 +349,14 @@ Generate a regression model with `voles` as the response variable `y` and `veg` 
 ```{r}
 # Type your code and comments inside the code chunk
 
+voles_mod <- lm(voles ~ veg + soil, vole_trapping)
+get_regression_table(voles_mod)
+
+ggplot(vole_trapping, aes(x = veg, y = voles, color = soil)) +
+  geom_point() +
+  geom_parallel_slopes(se = FALSE) +
+  labs(x = "vegetation coverage", y = "vole count", title = "Vole Count at site vs. Vegetation Coverage and Soil Hydration")
+
 ```
 :::
 
@@ -336,7 +365,7 @@ Would you recommend to a manager that they try to protect sites with high or low
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 18 Answers"}
-* Delete this and put your text answer here.
+* I would recommend to a manager that they protect sites with higher vegetation coverage, as an increase in vegetation coverage corresponds to an increase in vole count per site.
 :::
 
 ::: {.callout-note icon="false" title="Problem 19"}
@@ -344,10 +373,15 @@ Dry sites are typically a lot less money to purchase and maintain for conservati
 :::
 
 ::: {.callout-important icon="false" collapse="false" title="Problem 19 Answers"}
-* Delete this and put your text answer here.
+
+* The conservation organization needs to maintain a minimum of 56.12355% cover of vegetaion to support a population of about 30 voles at each dry site.
+
 
 ```{r}
 # Type your code and comments inside the code chunk
+ 
+min_perc <- (30 - 15.464)/0.259
+min_perc
 
 ```
 :::
@@ -360,10 +394,12 @@ The Nature Conservancy is looking at purchasing a site for this species (in the 
 ```{r}
 # Type your code and comments inside the code chunk
 
+moist_40 <- 15.5 + 9.1 + 0.259 * 40
+moist_40
 
 ```
 
-* Delete this and put your text answer here.
+* The predicted vole population for an area with moist soil and 40% vegetation coverage is 34.96 voles.
 :::
 
 # Turning in Your Work
